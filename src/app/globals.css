@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-background: #000000;
+  --color-foreground: #ffffff;
+
+  --color-card: #1C2526;
+  --color-card-foreground: #ffffff;
+
+  --color-popover: #1C2526;
+  --color-popover-foreground: #ffffff;
+
+  --color-primary: #0000FF;
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: #1C2526;
+  --color-secondary-foreground: #ffffff;
+
+  --color-muted: #2F3A44;
+  --color-muted-foreground: #C0C0C0;
+
+  --color-accent: #C0C0C0;
+  --color-accent-foreground: #000000;
+
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+
+  --color-border: #2F3A44;
+  --color-input: #2F3A44;
+  --color-ring: #C0C0C0;
+
+  --color-chart-1: #C0C0C0;
+  --color-chart-2: #2F3A44;
+  --color-chart-3: #1C2526;
+  --color-chart-4: #ffffff;
+  --color-chart-5: #000000;
+
+  --color-sidebar: #1C2526;
+  --color-sidebar-foreground: #C0C0C0;
+  --color-sidebar-primary: #C0C0C0;
+  --color-sidebar-primary-foreground: #000000;
+  --color-sidebar-accent: #2F3A44;
+  --color-sidebar-accent-foreground: #ffffff;
+  --color-sidebar-border: #2F3A44;
+  --color-sidebar-ring: #C0C0C0;
+
+  --color-app-primary: #000000;
+  --color-app-secondary: #1C2526;
+  --color-app-accent: #C0C0C0;
+  --color-app-accent-dark: #2F3A44;
+  --color-app-blue: #0000FF;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #C0C0C0;
+
+  --font-display: "Poppins", sans-serif;
+  --font-body: "Inter", sans-serif;
+
+  --radius-lg: 0.5rem;
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-app-accent-dark);
+  }
+}
+
+@layer base {
+  :root {
+    --background: #000000;
+    --foreground: #ffffff;
+    --card: #1C2526;
+    --card-foreground: #ffffff;
+    --popover: #1C2526;
+    --popover-foreground: #ffffff;
+    --primary: #0000FF;
+    --primary-foreground: #ffffff;
+    --secondary: #1C2526;
+    --secondary-foreground: #ffffff;
+    --muted: #2F3A44;
+    --muted-foreground: #C0C0C0;
+    --accent: #C0C0C0;
+    --accent-foreground: #000000;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #2F3A44;
+    --input: #2F3A44;
+    --ring: #C0C0C0;
+    --chart-1: #C0C0C0;
+    --chart-2: #2F3A44;
+    --chart-3: #1C2526;
+    --chart-4: #ffffff;
+    --chart-5: #000000;
+    --radius: 0.5rem;
+    --sidebar-background: #1C2526;
+    --sidebar-foreground: #C0C0C0;
+    --sidebar-primary: #C0C0C0;
+    --sidebar-primary-foreground: #000000;
+    --sidebar-accent: #2F3A44;
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: #2F3A44;
+    --sidebar-ring: #C0C0C0;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-app-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .container {
+    margin-inline: auto;
+    padding-inline: 2rem;
+  }
+
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-body {
+    font-family: var(--font-body);
+  }
+
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(192, 192, 192, 0.1);
+  }
+
+  .glow-effect {
+    box-shadow: 0 0 20px rgba(192, 192, 192, 0.3);
+  }
+}
