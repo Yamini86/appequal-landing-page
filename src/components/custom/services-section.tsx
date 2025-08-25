@@ -1,249 +1,334 @@
-"use client"
+"use client";
 
-import { useState, useRef, useEffect } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
-import { Button } from '@/components/ui/button'
-import { ArrowRight, CheckCircle, AlertTriangle } from 'lucide-react'
+import React, { useState, useRef, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, Cloud, Shield, FileCheck, CreditCard, Key, Search, TrendingUp, Lock, Map } from 'lucide-react';
+import gsap from 'gsap';
 
-interface TabContent {
-  id: string
-  title: string
-  statistic: string
-  statisticLabel: string
-  bulletPoints: string[]
-  goodNewsTitle: string
-  goodNewsContent: string
+interface ServiceData {
+  id: string;
+  title: string;
+  statistic: string;
+  statisticLabel: string;
+  bulletPoints: string[];
+  goodNewsTitle: string;
+  goodNewsContent: string;
+  icon: React.ComponentType<any>;
 }
 
-const tabsData: TabContent[] = [
+const servicesData: ServiceData[] = [
   {
     id: 'digital-infrastructure',
     title: 'Digital Infrastructure & Experience',
-    statistic: '73%',
-    statisticLabel: 'of businesses lose customers due to poor digital experience',
+    statistic: '95%',
+    statisticLabel: 'uptime achieved with cloud infrastructure',
     bulletPoints: [
-      'Average $4.2M annual revenue loss from poor user experience',
-      'Customer acquisition costs increase by 240% with weak digital presence',
-      '67% of users abandon websites that take longer than 3 seconds to load',
-      'Mobile-unfriendly sites lose 68% of potential conversions'
+      'Cloud-native architecture design',
+      'Scalable microservices implementation',
+      'User experience optimization',
+      'Performance monitoring & analytics'
     ],
-    goodNewsTitle: 'Good News!',
-    goodNewsContent: 'Our proven infrastructure solutions have helped clients increase conversion rates by 340% and reduce bounce rates by 85%.'
+    goodNewsTitle: 'Infrastructure Excellence',
+    goodNewsContent: 'Enhanced system reliability by 40% and reduced operational costs by 35% through optimized cloud solutions.',
+    icon: Cloud
   },
   {
     id: 'technology-scaling',
     title: 'Technology Scaling & Security',
-    statistic: '89%',
-    statisticLabel: 'of companies experience security breaches due to poor scaling practices',
+    statistic: '300%',
+    statisticLabel: 'performance improvement with scaling solutions',
     bulletPoints: [
-      'Unplanned downtime costs enterprises $300K per hour on average',
-      'Security vulnerabilities increase 450% during rapid scaling phases',
-      '78% of scaling failures result from inadequate infrastructure planning',
-      'Legacy system integration issues cause 65% of project delays'
+      'Auto-scaling infrastructure solutions',
+      'Security-first development practices',
+      'Load balancing & optimization',
+      'Continuous integration & deployment'
     ],
-    goodNewsTitle: 'Good News!',
-    goodNewsContent: 'Our security-first scaling methodology has achieved 99.97% uptime for enterprise clients while reducing infrastructure costs by 45%.'
+    goodNewsTitle: 'Scaling Success',
+    goodNewsContent: 'Achieved 99.9% system availability while supporting 10x traffic growth without performance degradation.',
+    icon: TrendingUp
   },
   {
-    id: 'financial-regulatory',
+    id: 'financial-compliance',
     title: 'Financial & Regulatory Compliance',
-    statistic: '61%',
-    statisticLabel: 'of financial institutions face compliance violations costing millions annually',
+    statistic: '100%',
+    statisticLabel: 'compliance rate with financial regulations',
     bulletPoints: [
-      'Average compliance violation fine reaches $2.8M per incident',
-      'Regulatory reporting errors increase operational costs by 230%',
-      '84% of audit failures stem from inadequate documentation systems',
-      'Manual compliance processes consume 40% of finance team productivity'
+      'Automated compliance monitoring',
+      'Real-time regulatory reporting',
+      'Risk assessment frameworks',
+      'Audit trail documentation'
     ],
-    goodNewsTitle: 'Good News!',
-    goodNewsContent: 'Our automated compliance solutions have helped clients achieve 100% audit success rates while reducing compliance costs by 60%.'
+    goodNewsTitle: 'Compliance Mastery',
+    goodNewsContent: 'Maintained perfect compliance scores while reducing regulatory reporting time by 60%.',
+    icon: FileCheck
+  },
+  {
+    id: 'banking-security',
+    title: 'Banking & Financial Security',
+    statistic: '82%',
+    statisticLabel: 'of banks face fraud annually',
+    bulletPoints: [
+      'Advanced encryption protocols',
+      'Real-time fraud detection',
+      'Secure payment processing',
+      'Multi-layer authentication systems'
+    ],
+    goodNewsTitle: 'Fraud Prevention Success',
+    goodNewsContent: 'Reduced fraud by 70% for clients through advanced AI-powered detection systems.',
+    icon: CreditCard
+  },
+  {
+    id: 'identity-access',
+    title: 'Identity & Access Management',
+    statistic: '65%',
+    statisticLabel: 'of breaches due to weak access controls',
+    bulletPoints: [
+      'Multi-factor authentication systems',
+      'Zero-trust security architecture',
+      'Identity verification protocols',
+      'Access privilege management'
+    ],
+    goodNewsTitle: 'Access Control Excellence',
+    goodNewsContent: '95% access compliance achieved with streamlined user authentication processes.',
+    icon: Key
+  },
+  {
+    id: 'audit-governance',
+    title: 'Audit & Governance Security',
+    statistic: '70%',
+    statisticLabel: 'audit delays from manual processes',
+    bulletPoints: [
+      'AI-powered audit automation',
+      'Compliance tracking systems',
+      'Governance framework implementation',
+      'Risk assessment protocols'
+    ],
+    goodNewsTitle: 'Audit Efficiency',
+    goodNewsContent: 'Cut audit time by 50% through intelligent automation and streamlined processes.',
+    icon: Search
+  },
+  {
+    id: 'revenue-security',
+    title: 'Revenue Security',
+    statistic: '45%',
+    statisticLabel: 'revenue loss from security leaks',
+    bulletPoints: [
+      'Revenue stream protection',
+      'Fraud detection algorithms',
+      'Financial data encryption',
+      'Transaction monitoring systems'
+    ],
+    goodNewsTitle: 'Revenue Protection',
+    goodNewsContent: 'Increased revenue retention by 60% through comprehensive security measures.',
+    icon: TrendingUp
+  },
+  {
+    id: 'cyber-security',
+    title: 'Cyber Security',
+    statistic: '90%',
+    statisticLabel: 'of firms hit by ransomware attacks',
+    bulletPoints: [
+      'Real-time threat monitoring',
+      'Advanced malware protection',
+      'Incident response protocols',
+      'Security awareness training'
+    ],
+    goodNewsTitle: 'Threat Mitigation',
+    goodNewsContent: '99% threat mitigation rate achieved through proactive security measures.',
+    icon: Shield
+  },
+  {
+    id: 'gis',
+    title: 'GIS',
+    statistic: '78%',
+    statisticLabel: 'better decision-making with GIS data',
+    bulletPoints: [
+      'Geospatial data analysis',
+      'Location intelligence solutions',
+      'Mapping & visualization tools',
+      'Spatial database management'
+    ],
+    goodNewsTitle: 'Geographic Intelligence',
+    goodNewsContent: 'Improved accuracy by 85% in strategic decision-making through advanced GIS solutions.',
+    icon: Map
   }
-]
+];
 
-export default function ServicesSection() {
-  const [activeTab, setActiveTab] = useState('digital-infrastructure')
-  const riverRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
-
-  const activeTabData = tabsData.find(tab => tab.id === activeTab) || tabsData[0]
+export const ServicesSection = () => {
+  const [activeTab, setActiveTab] = useState(0);
+  const [showRealityCheck, setShowRealityCheck] = useState<string | null>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Animate content change
-    if (contentRef.current) {
-      contentRef.current.style.opacity = '0'
-      contentRef.current.style.transform = 'translateY(20px)'
-      
-      setTimeout(() => {
-        if (contentRef.current) {
-          contentRef.current.style.transition = 'all 0.5s ease-out'
-          contentRef.current.style.opacity = '1'
-          contentRef.current.style.transform = 'translateY(0)'
-        }
-      }, 100)
+    if (cardsRef.current) {
+      gsap.fromTo(cardsRef.current.children,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.1 }
+      );
     }
-  }, [activeTab])
+  }, [activeTab]);
+
+  const handleTabChange = (index: number) => {
+    if (index === activeTab) return;
+    
+    if (cardsRef.current) {
+      gsap.to(cardsRef.current.children, {
+        opacity: 0,
+        y: -20,
+        duration: 0.25,
+        ease: "power2.in",
+        onComplete: () => {
+          setActiveTab(index);
+        }
+      });
+    }
+  };
+
+  const handlePrevious = () => {
+    const newIndex = activeTab > 0 ? activeTab - 1 : servicesData.length - 1;
+    handleTabChange(newIndex);
+  };
+
+  const handleNext = () => {
+    const newIndex = activeTab < servicesData.length - 1 ? activeTab + 1 : 0;
+    handleTabChange(newIndex);
+  };
+
+  const handleRealityCheck = (serviceId: string) => {
+    setShowRealityCheck(showRealityCheck === serviceId ? null : serviceId);
+  };
+
+  const currentServices = servicesData.slice(activeTab * 3, (activeTab + 1) * 3);
+  const totalTabs = Math.ceil(servicesData.length / 3);
 
   return (
-    <section id="services" className="relative min-h-screen bg-app-primary py-20">
-      {/* Animated River Flow */}
-      <div 
-        ref={riverRef}
-        className="absolute top-0 left-0 w-full h-1 overflow-hidden"
-      >
-        <div className="relative w-full h-full">
-          <div 
-            className="absolute inset-0 h-1 bg-gradient-to-r from-app-accent via-indigo-400 to-app-accent opacity-80"
-            style={{
-              animation: 'riverFlow 3s linear infinite',
-              background: 'linear-gradient(90deg, #C0C0C0 0%, #4f46e5 50%, #C0C0C0 100%)',
-              backgroundSize: '200% 100%'
-            }}
-          />
-        </div>
-      </div>
-
-      <div className="container mx-auto px-6 relative z-10">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1] }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary mb-4">
-            Our Services
-          </h2>
-          <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-            Comprehensive solutions designed to overcome your business challenges
+    <section className="py-16 bg-background">
+      <div className="container mx-auto px-4">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-foreground mb-4">Our Services</h2>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Comprehensive technology solutions designed to secure, scale, and optimize your business operations
+            with cutting-edge innovation and proven expertise.
           </p>
-        </motion.div>
+        </div>
 
         {/* Tab Navigation */}
-        <div className="flex flex-col lg:flex-row justify-center gap-4 mb-16">
-          {tabsData.map((tab) => (
+        <div className="flex justify-center mb-8">
+          <div ref={tabsRef} className="flex items-center space-x-2 bg-card border border-border rounded-xl p-2">
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`
-                relative px-8 py-4 rounded-lg transition-all duration-300 font-display font-medium
-                glass-effect border-2 text-center min-h-[80px] flex items-center justify-center
-                ${activeTab === tab.id 
-                  ? 'border-app-accent bg-app-accent/10 text-text-primary glow-effect' 
-                  : 'border-app-accent-dark/30 bg-app-secondary/30 text-text-secondary hover:border-app-accent/50 hover:bg-app-accent/5'
-                }
-              `}
+              onClick={handlePrevious}
+              className="p-2 rounded-lg hover:bg-accent transition-colors duration-200"
+              aria-label="Previous services"
             >
-              <span className="text-sm lg:text-base leading-tight">
-                {tab.title}
-              </span>
-              
-              {activeTab === tab.id && (
-                <motion.div
-                  layoutId="activeTabIndicator"
-                  className="absolute inset-0 rounded-lg bg-app-accent/5 border-2 border-app-accent"
-                  initial={false}
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
-              )}
+              <ChevronLeft className="w-5 h-5 text-foreground" />
             </button>
-          ))}
+            
+            <div className="flex space-x-2">
+              {Array.from({ length: totalTabs }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleTabChange(i)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    activeTab === i
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                  }`}
+                >
+                  {i * 3 + 1}-{Math.min((i + 1) * 3, servicesData.length)}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={handleNext}
+              className="p-2 rounded-lg hover:bg-accent transition-colors duration-200"
+              aria-label="Next services"
+            >
+              <ChevronRight className="w-5 h-5 text-foreground" />
+            </button>
+          </div>
         </div>
 
-        {/* Reality Check Box */}
-        <motion.div 
-          className="glass-effect bg-app-secondary/80 rounded-2xl p-8 lg:p-12 border-2 border-app-accent-dark/30"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              ref={contentRef}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="grid lg:grid-cols-2 gap-12"
-            >
-              {/* Left Panel */}
-              <div className="space-y-8">
-                <div>
-                  <h2 className="font-display text-4xl lg:text-5xl font-bold text-text-primary mb-6">
-                    The Reality Check
-                  </h2>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-baseline gap-4">
-                      <span className="font-display text-6xl lg:text-7xl font-bold text-app-accent">
-                        {activeTabData.statistic}
-                      </span>
-                    </div>
-                    <p className="text-lg lg:text-xl text-text-secondary leading-relaxed">
-                      {activeTabData.statisticLabel}
-                    </p>
+        {/* Services Cards */}
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {currentServices.map((service) => {
+            const IconComponent = service.icon;
+            const isRealityCheckActive = showRealityCheck === service.id;
+            
+            return (
+              <div
+                key={service.id}
+                className="group relative bg-card border border-border rounded-2xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+              >
+                {/* 3D Icon */}
+                <div className="mb-6 flex justify-center">
+                  <div className="relative w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300">
+                    <IconComponent className="w-8 h-8 text-primary transform group-hover:scale-110 transition-transform duration-300" />
                   </div>
                 </div>
 
-                <Button 
-                  className="bg-app-accent text-app-primary hover:bg-app-accent/90 font-display font-semibold px-8 py-6 text-lg rounded-lg transition-all duration-300 glow-effect group"
-                >
-                  See Our Solution
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </div>
-
-              {/* Right Panel */}
-              <div className="space-y-8">
-                <div>
-                  <div className="flex items-center gap-3 mb-6">
-                    <AlertTriangle className="h-6 w-6 text-red-400" />
-                    <h3 className="font-display text-xl font-semibold text-text-primary">
-                      Lost Revenue Opportunities
-                    </h3>
-                  </div>
+                {/* Service Content */}
+                <div className={`transition-opacity duration-300 ${isRealityCheckActive ? 'opacity-0 absolute' : 'opacity-100'}`}>
+                  <h3 className="text-xl font-bold text-foreground mb-4 text-center">
+                    {service.title}
+                  </h3>
                   
-                  <ul className="space-y-4">
-                    {activeTabData.bulletPoints.map((point, index) => (
-                      <motion.li
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="flex items-start gap-3 text-text-secondary"
-                      >
-                        <div className="w-2 h-2 rounded-full bg-app-accent mt-3 flex-shrink-0" />
-                        <span className="leading-relaxed">{point}</span>
-                      </motion.li>
+                  <ul className="space-y-2 mb-6">
+                    {service.bulletPoints.map((point, index) => (
+                      <li key={index} className="flex items-start space-x-2">
+                        <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                        <span className="text-muted-foreground text-sm">{point}</span>
+                      </li>
                     ))}
                   </ul>
                 </div>
 
-                {/* Good News Box */}
-                <div className="glass-effect bg-emerald-900/20 border-2 border-emerald-500/30 rounded-xl p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <CheckCircle className="h-6 w-6 text-emerald-400" />
-                    <h4 className="font-display text-lg font-semibold text-emerald-400">
-                      {activeTabData.goodNewsTitle}
-                    </h4>
+                {/* Reality Check Content */}
+                <div className={`transition-opacity duration-300 ${isRealityCheckActive ? 'opacity-100' : 'opacity-0 absolute'}`}>
+                  <div className="text-center mb-4">
+                    <div className="text-3xl font-bold text-primary mb-2">{service.statistic}</div>
+                    <p className="text-sm text-muted-foreground">{service.statisticLabel}</p>
                   </div>
-                  <p className="text-text-secondary leading-relaxed">
-                    {activeTabData.goodNewsContent}
-                  </p>
+                  
+                  <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                    <h4 className="font-semibold text-green-800 dark:text-green-300 mb-2">
+                      {service.goodNewsTitle}
+                    </h4>
+                    <p className="text-sm text-green-700 dark:text-green-400">
+                      {service.goodNewsContent}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
-      </div>
 
-      <style jsx>{`
-        @keyframes riverFlow {
-          0% { background-position: 0% 0%; }
-          100% { background-position: 200% 0%; }
-        }
-      `}</style>
+                {/* Reality Check Button */}
+                <button
+                  onClick={() => handleRealityCheck(service.id)}
+                  className="w-full mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 text-sm font-medium"
+                >
+                  {isRealityCheckActive ? 'Back to Details' : 'Reality Check'}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Mobile Navigation Indicators */}
+        <div className="flex justify-center mt-8 md:hidden">
+          <div className="flex space-x-2">
+            {Array.from({ length: totalTabs }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => handleTabChange(i)}
+                className={`w-3 h-3 rounded-full transition-colors duration-200 ${
+                  activeTab === i ? 'bg-primary' : 'bg-border'
+                }`}
+                aria-label={`Go to page ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
     </section>
-  )
-}
+  );
+};
