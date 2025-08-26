@@ -1,223 +1,148 @@
-"use client";
+"use client"
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, Play, Sparkles, Zap, Target } from 'lucide-react';
+import { useEffect, useRef } from 'react'
+import { motion } from 'motion/react'
+import { ChevronDown } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export default function HeroSection() {
-  const handleGetStarted = () => {
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const canvasRef = useRef<HTMLDivElement>(null)
 
-  const handleLearnMore = () => {
-    const aboutSection = document.getElementById('about');
-    if (aboutSection) {
-      aboutSection.scrollIntoView({ behavior: 'smooth' });
+  useEffect(() => {
+    // GSAP-style fade-in animation placeholder
+    // In a real implementation, this would initialize GSAP animations
+    const elements = document.querySelectorAll('.animate-fade-in')
+    elements.forEach((el, index) => {
+      setTimeout(() => {
+        el.classList.add('opacity-100')
+        el.classList.remove('opacity-0')
+      }, index * 200 + 500)
+    })
+  }, [])
+
+  const handleExploreClick = () => {
+    const servicesSection = document.querySelector('#services')
+    if (servicesSection) {
+      servicesSection.scrollIntoView({ behavior: 'smooth' })
     }
-  };
+  }
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
-      {/* Animated Background Gradient */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 2 }}
-        className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-indigo-600/10"
-      />
-      
-      {/* Floating Elements */}
-      <motion.div
-        initial={{ y: 0, opacity: 0 }}
-        animate={{ 
-          y: [-20, 0, -20],
-          opacity: [0, 1, 1]
+    <section id="home" className="relative w-full overflow-hidden bg-app-primary" style={{ minHeight: 'calc(100vh - 80px)', marginTop: '80px' }}>
+      {/* WebGL Canvas Placeholder */}
+      <div 
+        ref={canvasRef}
+        className="absolute inset-0 z-0"
+        style={{
+          background: `
+            radial-gradient(circle at 20% 80%, rgba(0, 0, 255, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(192, 192, 192, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 40% 40%, rgba(47, 58, 68, 0.3) 0%, transparent 50%)
+          `
         }}
-        transition={{
-          duration: 6,
-          delay: 0.5,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="absolute top-20 left-10 lg:top-32 lg:left-20"
       >
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500/30 to-cyan-500/30 backdrop-blur-sm" />
-      </motion.div>
-
-      <motion.div
-        initial={{ y: 0, opacity: 0 }}
-        animate={{ 
-          y: [-25, 0, -25],
-          opacity: [0, 1, 1]
-        }}
-        transition={{
-          duration: 8,
-          delay: 1,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="absolute top-40 right-16 lg:top-48 lg:right-32"
-      >
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500/30 to-pink-500/30 backdrop-blur-sm" />
-      </motion.div>
-
-      {/* Floating Icons */}
-      <motion.div
-        initial={{ y: 0, opacity: 0 }}
-        animate={{ 
-          y: [-15, 0, -15],
-          opacity: [0, 1, 1]
-        }}
-        transition={{
-          duration: 6,
-          delay: 0.8,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="absolute top-64 left-1/4 hidden lg:block"
-      >
-        <div className="p-3 rounded-full bg-white/10 backdrop-blur-sm">
-          <Zap className="w-6 h-6 text-yellow-400" />
+        {/* Static particles */}
+        <div className="absolute inset-0">
+          {[...Array(50)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 rounded-full opacity-20"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                background: Math.random() > 0.5 ? '#0000FF' : '#C0C0C0'
+              }}
+            />
+          ))}
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ y: 0, opacity: 0 }}
-        animate={{ 
-          y: [-20, 0, -20],
-          opacity: [0, 1, 1]
-        }}
-        transition={{
-          duration: 8,
-          delay: 1.2,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="absolute top-80 right-1/3 hidden lg:block"
-      >
-        <div className="p-3 rounded-full bg-white/10 backdrop-blur-sm">
-          <Target className="w-6 h-6 text-green-400" />
-        </div>
-      </motion.div>
-
-      {/* Main Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="space-y-8"
-        >
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium text-white"
+      {/* Hero Content */}
+      <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center lg:px-8" style={{ minHeight: 'calc(100vh - 80px)' }}>
+        <div className="max-w-4xl mx-auto space-y-8">
+          {/* Main Heading */}
+          <motion.h1 
+            className="animate-fade-in opacity-0 font-display text-3xl font-bold leading-tight transition-opacity duration-1000 md:text-4xl lg:text-6xl"
+            style={{
+              background: 'linear-gradient(135deg, #0000FF 0%, #C0C0C0 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <Sparkles className="w-4 h-4 text-yellow-400" />
-            Revolutionizing Business Excellence
-          </motion.div>
-
-          {/* Main Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white leading-tight"
-          >
-            Empowering Businesses to{' '}
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-              Achieve Equality
-            </span>
-            {' '}in Excellence
+            Empowering Your Digital Future
           </motion.h1>
 
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-lg sm:text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed"
+          {/* New Subtitle */}
+          <motion.p 
+            className="animate-fade-in opacity-0 font-body text-lg font-medium text-text-secondary transition-opacity duration-1000 md:text-xl lg:text-2xl max-w-3xl mx-auto"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
           >
-            At AppEqual, we believe every business deserves equal access to cutting-edge technology 
-            and strategic solutions. Transform your organization with our innovative approach to 
-            digital transformation, automation, and sustainable growth.
+            With Innovative Solutions that transform businesses through cutting-edge web development, e-commerce platforms, and mobile applications
           </motion.p>
 
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4"
+          {/* Company Name */}
+          <motion.p 
+            className="animate-fade-in opacity-0 font-body text-base font-medium text-text-secondary/80 transition-opacity duration-1000 md:text-lg"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
           >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleGetStarted}
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-full transition-all duration-300 shadow-lg"
-            >
-              Get Started Today
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-            </motion.button>
+            AppEqual E-Commerce Pvt Ltd - Pioneering Technology Solutions in Hyderabad, India
+          </motion.p>
 
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleLearnMore}
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full backdrop-blur-sm border border-white/20 hover:border-white/30 transition-all duration-300"
+          {/* CTA Button */}
+          <motion.div
+            className="animate-fade-in opacity-0 transition-opacity duration-1000"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            <Button
+              onClick={handleExploreClick}
+              size="lg"
+              className="group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 text-white font-display font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-110 hover:shadow-lg"
+              style={{
+                boxShadow: '0 0 30px rgba(0, 0, 255, 0.4)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = '0 0 50px rgba(0, 0, 255, 0.6)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 0, 255, 0.4)'
+              }}
             >
-              <Play className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-              Learn More
-            </motion.button>
+              <span className="relative z-10">Explore Our Solutions</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/80 to-blue-600/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            </Button>
           </motion.div>
+        </div>
 
-          {/* Stats */}
+        {/* Scroll Indicator */}
+        <motion.div 
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-fade-in opacity-0 transition-opacity duration-1000"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1.0 }}
+        >
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-8 pt-12 max-w-3xl mx-auto"
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="flex flex-col items-center space-y-2 text-text-secondary"
           >
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-2">500+</div>
-              <div className="text-gray-400">Businesses Transformed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-2">98%</div>
-              <div className="text-gray-400">Client Satisfaction</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-2">24/7</div>
-              <div className="text-gray-400">Expert Support</div>
-            </div>
+            <span className="font-body text-sm">Scroll to explore</span>
+            <ChevronDown className="h-6 w-6" />
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 2 }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center"
-        >
-          <motion.div
-            animate={{ y: [0, 12, 0], opacity: [0, 1, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-1 h-3 bg-white/60 rounded-full mt-2"
-          />
-        </motion.div>
-      </motion.div>
+      {/* Glassmorphic overlay for depth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-app-primary/20 pointer-events-none" />
     </section>
-  );
+  )
 }

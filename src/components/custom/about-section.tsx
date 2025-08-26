@@ -1,243 +1,199 @@
-"use client";
+"use client"
 
-import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
-import { useRef } from 'react';
-import { Users, Target, Award, TrendingUp, Globe, Zap } from 'lucide-react';
+import { motion } from "motion/react"
+import { useEffect, useRef } from "react"
 
-interface Statistic {
-  id: string;
-  label: string;
-  value: string;
-  icon: React.ComponentType<{ className?: string }>;
-  description: string;
-}
+export default function AboutSection() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const threejsRef = useRef<HTMLDivElement>(null)
 
-interface AboutSectionProps {
-  className?: string;
-}
-
-const statistics: Statistic[] = [
-  {
-    id: '1',
-    label: 'Active Users',
-    value: '50K+',
-    icon: Users,
-    description: 'Growing community worldwide'
-  },
-  {
-    id: '2',
-    label: 'Success Rate',
-    value: '98%',
-    icon: Target,
-    description: 'Customer satisfaction score'
-  },
-  {
-    id: '3',
-    label: 'Awards Won',
-    value: '25+',
-    icon: Award,
-    description: 'Industry recognition'
-  },
-  {
-    id: '4',
-    label: 'Growth Rate',
-    value: '300%',
-    icon: TrendingUp,
-    description: 'Year-over-year growth'
-  }
-];
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-      duration: 0.6
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.25, 0.1, 0.25, 1]
-    }
-  }
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.5,
-      ease: [0.25, 0.1, 0.25, 1]
-    }
-  }
-};
-
-export default function AboutSection({ className = '' }: AboutSectionProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  useEffect(() => {
+    // GSAP scroll-triggered animation setup would go here
+    // For now, we'll use CSS animations as a fallback
+  }, [])
 
   return (
     <section 
-      ref={ref}
-      className={`relative py-24 bg-gradient-to-br from-slate-50 to-white overflow-hidden ${className}`}
+      id="about"
+      className="relative min-h-screen bg-app-secondary overflow-hidden py-20"
     >
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
-      
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center"
-        >
-          {/* Left Column - Content */}
-          <div className="space-y-8">
-            <motion.div variants={itemVariants} className="space-y-6">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
-                <Globe className="w-4 h-4 mr-2" />
-                About AppEqual
-              </div>
-              
-              <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 leading-tight">
-                Empowering equality through 
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                  {" "}innovation
-                </span>
-              </h2>
-              
-              <p className="text-xl text-slate-600 leading-relaxed">
-                At AppEqual, we believe technology should be a force for equality and inclusion. 
-                Our mission is to create digital solutions that break down barriers and create 
-                opportunities for everyone, regardless of their background or circumstances.
-              </p>
-            </motion.div>
+      {/* Parallax Background Elements */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-app-accent/10 rounded-full blur-xl" />
+        <div className="absolute bottom-40 right-20 w-48 h-48 bg-app-accent/5 rounded-full blur-2xl" />
+        <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-text-secondary/10 rounded-full blur-lg" />
+      </div>
 
-            <motion.div variants={itemVariants} className="space-y-6">
-              <h3 className="text-2xl font-semibold text-slate-900 flex items-center">
-                <Zap className="w-6 h-6 mr-3 text-blue-600" />
-                Our Values
-              </h3>
-              
-              <div className="space-y-4">
-                <div className="flex items-start space-x-4">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full mt-3 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-semibold text-slate-900">Inclusivity First</h4>
-                    <p className="text-slate-600">Every feature we build prioritizes accessibility and inclusive design.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4">
-                  <div className="w-2 h-2 bg-purple-600 rounded-full mt-3 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-semibold text-slate-900">Innovation for Impact</h4>
-                    <p className="text-slate-600">We leverage cutting-edge technology to solve real-world social challenges.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4">
-                  <div className="w-2 h-2 bg-green-600 rounded-full mt-3 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-semibold text-slate-900">Community Driven</h4>
-                    <p className="text-slate-600">Our platform grows stronger through diverse perspectives and collaboration.</p>
-                  </div>
-                </div>
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Text Content - Left Column */}
+            <motion.div
+              ref={containerRef}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="space-y-8"
+            >
+              {/* Glassmorphic Container */}
+              <div className="glass-effect rounded-2xl p-8 lg:p-12">
+                {/* Main Heading */}
+                <motion.h2
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  viewport={{ once: true }}
+                  className="font-display text-4xl lg:text-5xl font-bold text-text-primary mb-8"
+                >
+                  About AppEqual
+                </motion.h2>
+
+                {/* Primary Text */}
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  viewport={{ once: true }}
+                  className="font-body text-lg lg:text-xl text-text-secondary leading-relaxed mb-10"
+                >
+                  AppEqual E-Commerce Pvt Ltd is an enterprise organization provides Web, E-Commerce and Mobile Application solution using different concepts
+                </motion.p>
+
+                {/* Mission Subheading */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                  viewport={{ once: true }}
+                  className="relative"
+                >
+                  <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-app-accent to-transparent rounded-full" />
+                  <h3 className="font-display text-2xl lg:text-3xl font-semibold text-text-primary mb-4">
+                    Our Mission
+                  </h3>
+                  <p className="font-body text-lg text-app-accent font-medium">
+                    To innovate digital experiences for global businesses
+                  </p>
+                </motion.div>
               </div>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="pt-6">
-              <div className="flex items-center space-x-6 text-sm text-slate-600">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mr-2" />
-                  Founded in 2020
+            {/* Three.js Animation Container - Right Column */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="relative h-96 lg:h-[500px]"
+            >
+              {/* Three.js Placeholder */}
+              <div
+                ref={threejsRef}
+                className="w-full h-full glass-effect rounded-2xl flex items-center justify-center relative overflow-hidden"
+              >
+                {/* Floating Text Animation Placeholder */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="relative">
+                    {/* Animated Text Elements */}
+                    <motion.div
+                      animate={{
+                        y: [0, -20, 0],
+                        rotate: [0, 5, 0],
+                      }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        ease: "easeInOut",
+                      }}
+                      className="absolute -top-16 -left-16 font-display text-2xl font-bold text-app-accent/30"
+                    >
+                      Innovation
+                    </motion.div>
+                    
+                    <motion.div
+                      animate={{
+                        y: [0, 15, 0],
+                        rotate: [0, -3, 0],
+                      }}
+                      transition={{
+                        duration: 5,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        ease: "easeInOut",
+                        delay: 1,
+                      }}
+                      className="absolute -bottom-12 right-4 font-display text-xl font-semibold text-text-secondary/40"
+                    >
+                      Excellence
+                    </motion.div>
+                    
+                    <motion.div
+                      animate={{
+                        y: [0, -10, 0],
+                        x: [0, 10, 0],
+                      }}
+                      transition={{
+                        duration: 3.5,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        ease: "easeInOut",
+                        delay: 2,
+                      }}
+                      className="absolute top-8 -right-20 font-display text-lg font-medium text-app-accent/25"
+                    >
+                      Digital
+                    </motion.div>
+
+                    {/* Central Element */}
+                    <div className="w-32 h-32 glass-effect rounded-full flex items-center justify-center glow-effect">
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          duration: 20,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
+                        className="w-16 h-16 border-2 border-app-accent/50 rounded-full relative"
+                      >
+                        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-app-accent rounded-full" />
+                      </motion.div>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full mr-2" />
-                  Global team of 50+
+
+                {/* Background Particles */}
+                <div className="absolute inset-0 overflow-hidden">
+                  {[...Array(8)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute w-2 h-2 bg-app-accent/20 rounded-full"
+                      style={{
+                        left: `${Math.random() * 100}%`,
+                        top: `${Math.random() * 100}%`,
+                      }}
+                      animate={{
+                        y: [0, -30, 0],
+                        opacity: [0.2, 0.8, 0.2],
+                      }}
+                      transition={{
+                        duration: 3 + Math.random() * 2,
+                        repeat: Infinity,
+                        delay: Math.random() * 2,
+                        ease: "easeInOut",
+                      }}
+                    />
+                  ))}
                 </div>
               </div>
             </motion.div>
           </div>
-
-          {/* Right Column - Statistics */}
-          <motion.div variants={itemVariants} className="space-y-8">
-            <div className="text-center lg:text-left">
-              <h3 className="text-2xl font-semibold text-slate-900 mb-6">
-                Our Impact by Numbers
-              </h3>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {statistics.map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <motion.div
-                    key={stat.id}
-                    variants={cardVariants}
-                    whileHover={{ 
-                      y: -5, 
-                      transition: { duration: 0.2 } 
-                    }}
-                    className="group relative"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300" />
-                    <div className="relative bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                          <Icon className="w-6 h-6 text-white" />
-                        </div>
-                        <div className="text-right">
-                          <div className="text-3xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors duration-300">
-                            {stat.value}
-                          </div>
-                        </div>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-slate-900 mb-1">
-                          {stat.label}
-                        </h4>
-                        <p className="text-sm text-slate-600">
-                          {stat.description}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-
-            {/* Company Story */}
-            <motion.div 
-              variants={cardVariants}
-              className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-8 text-white"
-            >
-              <h4 className="text-xl font-semibold mb-4 flex items-center">
-                <Award className="w-5 h-5 mr-2 text-yellow-400" />
-                Our Story
-              </h4>
-              <p className="text-slate-300 leading-relaxed">
-                Started by a diverse team of developers, designers, and social advocates, 
-                AppEqual was born from the belief that technology can be humanity's greatest 
-                equalizer. We've grown from a small startup to a globally recognized platform, 
-                but our core mission remains unchanged: making the digital world more equitable for all.
-              </p>
-            </motion.div>
-          </motion.div>
-        </motion.div>
+        </div>
       </div>
+
+      {/* Section Transition Effect */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-app-primary to-transparent pointer-events-none" />
     </section>
-  );
+  )
 }

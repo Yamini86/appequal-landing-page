@@ -1,264 +1,356 @@
 "use client";
 
-import React, { useState } from 'react';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Facebook, 
-  Twitter, 
-  Instagram, 
-  Linkedin, 
-  Youtube,
-  Send,
-  ExternalLink,
-  Building2
-} from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { motion, useInView } from 'motion/react';
+import { Twitter, Github, Linkedin, Facebook, Mail, Phone, MapPin, Calendar } from 'lucide-react';
 
-interface FooterColumn {
-  title: string;
-  links: {
-    label: string;
-    href: string;
-    external?: boolean;
-  }[];
-}
+const ParticleField: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-interface SocialLink {
-  platform: string;
-  href: string;
-  icon: React.ReactNode;
-}
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-interface ContactInfo {
-  type: string;
-  value: string;
-  icon: React.ReactNode;
-}
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationId: number;
+    const particles: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      size: number;
+      opacity: number;
+    }> = [];
+
+    const createParticles = () => {
+      const particleCount = window.innerWidth < 768 ? 30 : 60;
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          size: Math.random() * 2 + 1,
+          opacity: Math.random() * 0.5 + 0.2
+        });
+      }
+    };
+
+    const resizeCanvas = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      particles.length = 0;
+      createParticles();
+    };
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      particles.forEach(particle => {
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        
+        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
+        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
+        
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 0, 255, ${particle.opacity})`;
+        ctx.fill();
+        
+        const gradient = ctx.createRadialGradient(
+          particle.x, particle.y, 0,
+          particle.x, particle.y, particle.size * 3
+        );
+        gradient.addColorStop(0, `rgba(0, 0, 255, ${particle.opacity * 0.3})`);
+        gradient.addColorStop(1, 'rgba(0, 0, 255, 0)');
+        
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size * 3, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+      });
+      
+      animationId = requestAnimationFrame(animate);
+    };
+
+    resizeCanvas();
+    animate();
+
+    window.addEventListener('resize', resizeCanvas);
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', resizeCanvas);
+    };
+  }, []);
+
+  return (
+    <canvas 
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full pointer-events-none"
+    />
+  );
+};
 
 export const Footer: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [isSubscribing, setIsSubscribing] = useState(false);
+  const footerRef = useRef<HTMLElement>(null);
+  const isInView = useInView(footerRef, { once: true, margin: "-100px" });
 
-  const footerColumns: FooterColumn[] = [
-    {
-      title: 'Services',
-      links: [
-        { label: 'Web Development', href: '/services/web-development' },
-        { label: 'Mobile Apps', href: '/services/mobile-apps' },
-        { label: 'Cloud Solutions', href: '/services/cloud-solutions' },
-        { label: 'AI & Machine Learning', href: '/services/ai-ml' },
-        { label: 'Consulting', href: '/services/consulting' },
-        { label: 'Support', href: '/services/support' }
-      ]
-    },
-    {
-      title: 'Company',
-      links: [
-        { label: 'About Us', href: '/about' },
-        { label: 'Our Team', href: '/team' },
-        { label: 'Careers', href: '/careers' },
-        { label: 'News & Blog', href: '/blog' },
-        { label: 'Case Studies', href: '/case-studies' },
-        { label: 'Partners', href: '/partners' }
-      ]
-    },
-    {
-      title: 'Resources',
-      links: [
-        { label: 'Documentation', href: '/docs' },
-        { label: 'API Reference', href: '/api' },
-        { label: 'Community', href: '/community' },
-        { label: 'Help Center', href: '/help' },
-        { label: 'Status Page', href: 'https://status.company.com', external: true },
-        { label: 'Security', href: '/security' }
-      ]
+  const currentYear = new Date().getFullYear();
+  const lastUpdated = new Date().toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+
+  const services = [
+    { name: 'Web Development', href: '#services' },
+    { name: 'E-commerce Solutions', href: '#services' },
+    { name: 'Mobile Applications', href: '#portfolio' },
+    { name: 'Investment Consulting', href: '#investment' }
+  ];
+
+  const socialLinks = [
+    { icon: Twitter, href: '#', label: 'Twitter' },
+    { icon: Github, href: '#', label: 'GitHub' },
+    { icon: Linkedin, href: '#', label: 'LinkedIn' },
+    { icon: Facebook, href: '#', label: 'Facebook' }
+  ];
+
+  const containerVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        staggerChildren: 0.1
+      }
     }
-  ];
+  };
 
-  const socialLinks: SocialLink[] = [
-    { platform: 'Facebook', href: 'https://facebook.com/company', icon: <Facebook size={20} /> },
-    { platform: 'Twitter', href: 'https://twitter.com/company', icon: <Twitter size={20} /> },
-    { platform: 'Instagram', href: 'https://instagram.com/company', icon: <Instagram size={20} /> },
-    { platform: 'LinkedIn', href: 'https://linkedin.com/company/company', icon: <Linkedin size={20} /> },
-    { platform: 'YouTube', href: 'https://youtube.com/@company', icon: <Youtube size={20} /> }
-  ];
-
-  const contactInfo: ContactInfo[] = [
-    { type: 'Email', value: 'hello@company.com', icon: <Mail size={16} /> },
-    { type: 'Phone', value: '+1 (555) 123-4567', icon: <Phone size={16} /> },
-    { type: 'Address', value: '123 Innovation Street, Tech City, TC 12345', icon: <MapPin size={16} /> }
-  ];
-
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-
-    setIsSubscribing(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setEmail('');
-    setIsSubscribing(false);
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6 }
+    }
   };
 
   return (
-    <footer className="relative bg-slate-900 text-white overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 opacity-90" />
-      
-      {/* Glass morphism overlay */}
-      <div className="absolute inset-0 backdrop-blur-sm bg-black/10" />
-      
-      {/* Animated background elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-32 right-32 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl animate-pulse delay-500" />
-      </div>
+    <footer 
+      ref={footerRef}
+      className="relative bg-black overflow-hidden"
+    >
+      {/* Particle Background */}
+      <ParticleField />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      {/* Main Footer Content */}
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate={isInView ? "visible" : "hidden"}
+        className="relative z-10 container mx-auto px-6 py-16"
+      >
+        {/* Glassmorphic Container */}
+        <div className="relative backdrop-blur-xl bg-white/5 rounded-3xl border border-blue-500/20 p-8 md:p-12">
+          {/* Blue Glow Effect */}
+          <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/10 via-transparent to-blue-500/10 animate-pulse" />
           
-          {/* Company Info Section */}
-          <div className="lg:col-span-4 space-y-6">
-            <div className="flex items-center space-x-3 group">
-              <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                <Building2 size={24} className="text-white" />
-              </div>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                TechCorp
-              </h2>
-            </div>
-            
-            <p className="text-gray-300 leading-relaxed">
-              Pioneering the future of technology with innovative solutions that transform businesses 
-              and empower digital transformation across industries worldwide.
-            </p>
-
-            {/* Contact Information */}
-            <div className="space-y-3">
-              {contactInfo.map((contact, index) => (
-                <div key={index} className="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors duration-200">
-                  <div className="text-indigo-400">{contact.icon}</div>
-                  <span className="text-sm">{contact.value}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Social Media Links */}
-            <div className="flex space-x-4">
-              {socialLinks.map((social, index) => (
-                <a
-                  key={index}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-white/10 hover:border-indigo-400/50 hover:scale-110 transition-all duration-300 group"
-                  aria-label={social.platform}
-                >
-                  <div className="text-gray-400 group-hover:text-indigo-400 transition-colors duration-200">
-                    {social.icon}
-                  </div>
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Footer Columns */}
-          <div className="lg:col-span-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {footerColumns.map((column, columnIndex) => (
-                <div key={columnIndex} className="space-y-4">
-                  <h3 className="text-lg font-semibold text-white border-b border-gradient-to-r from-indigo-400 to-transparent pb-2">
-                    {column.title}
-                  </h3>
-                  <ul className="space-y-3">
-                    {column.links.map((link, linkIndex) => (
-                      <li key={linkIndex}>
-                        <a
-                          href={link.href}
-                          target={link.external ? "_blank" : undefined}
-                          rel={link.external ? "noopener noreferrer" : undefined}
-                          className="flex items-center space-x-2 text-gray-300 hover:text-indigo-400 transition-colors duration-200 group"
-                        >
-                          <span className="text-sm group-hover:translate-x-1 transition-transform duration-200">
-                            {link.label}
-                          </span>
-                          {link.external && (
-                            <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                          )}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Newsletter Section */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300">
-              <h3 className="text-lg font-semibold text-white mb-4">Stay Updated</h3>
-              <p className="text-gray-300 text-sm mb-6">
-                Get the latest news and updates delivered to your inbox.
+          <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+            {/* Company Section */}
+            <motion.div variants={itemVariants} className="lg:col-span-1">
+              <motion.div
+                className="group cursor-pointer"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <h3 className="font-display text-3xl font-bold text-white mb-4 bg-gradient-to-r from-white via-blue-200 to-white bg-clip-text text-transparent">
+                  AppEqual
+                </h3>
+                <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full mb-4 group-hover:w-24 transition-all duration-300" />
+              </motion.div>
+              <p className="font-body text-gray-300 text-sm leading-relaxed mb-6">
+                Crafting digital excellence through innovative web solutions, cutting-edge mobile applications, and strategic investment consulting.
               </p>
+              <motion.div
+                className="inline-flex items-center gap-2 text-blue-400 text-sm"
+                whileHover={{ x: 5 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <Calendar size={16} />
+                <span>Est. 2024</span>
+              </motion.div>
+            </motion.div>
+
+            {/* Services Section */}
+            <motion.div variants={itemVariants} className="lg:col-span-1">
+              <h4 className="font-display text-xl font-semibold text-white mb-6 relative">
+                Services
+                <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-blue-500 rounded-full" />
+              </h4>
+              <ul className="space-y-3">
+                {services.map((service, index) => (
+                  <motion.li key={index}>
+                    <motion.a
+                      href={service.href}
+                      className="font-body text-gray-300 hover:text-blue-400 transition-all duration-300 text-sm group flex items-center gap-2"
+                      whileHover={{ x: 8, scale: 1.02 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      <div className="w-1 h-1 bg-blue-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      {service.name}
+                    </motion.a>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+
+            {/* Contact Section */}
+            <motion.div variants={itemVariants} className="lg:col-span-1">
+              <h4 className="font-display text-xl font-semibold text-white mb-6 relative">
+                Contact
+                <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-blue-500 rounded-full" />
+              </h4>
+              <div className="space-y-4">
+                <motion.div
+                  className="flex items-start gap-3 group cursor-pointer"
+                  whileHover={{ x: 5 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <MapPin size={16} className="text-blue-400 mt-1 group-hover:text-blue-300 transition-colors" />
+                  <span className="font-body text-gray-300 text-sm leading-relaxed">
+                    123 Innovation Drive<br />
+                    Tech Valley, CA 94025
+                  </span>
+                </motion.div>
+                <motion.div
+                  className="flex items-center gap-3 group cursor-pointer"
+                  whileHover={{ x: 5 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <Phone size={16} className="text-blue-400 group-hover:text-blue-300 transition-colors" />
+                  <span className="font-body text-gray-300 text-sm">+1 (555) 123-4567</span>
+                </motion.div>
+                <motion.div
+                  className="flex items-center gap-3 group cursor-pointer"
+                  whileHover={{ x: 5 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <Mail size={16} className="text-blue-400 group-hover:text-blue-300 transition-colors" />
+                  <span className="font-body text-gray-300 text-sm">hello@appequal.com</span>
+                </motion.div>
+              </div>
+            </motion.div>
+
+            {/* Social Section */}
+            <motion.div variants={itemVariants} className="lg:col-span-1">
+              <h4 className="font-display text-xl font-semibold text-white mb-6 relative">
+                Connect
+                <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-blue-500 rounded-full" />
+              </h4>
+              <div className="flex flex-wrap gap-4">
+                {socialLinks.map((social, index) => (
+                  <motion.a
+                    key={index}
+                    href={social.href}
+                    aria-label={social.label}
+                    className="relative group"
+                    whileHover={{ scale: 1.2, rotate: 5 }}
+                    whileTap={{ scale: 0.9 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <div className="absolute inset-0 bg-blue-500/20 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 scale-150" />
+                    <div className="relative p-3 bg-white/5 rounded-lg border border-blue-500/20 group-hover:border-blue-500/50 transition-all duration-300 backdrop-blur-sm">
+                      <social.icon size={20} className="text-gray-300 group-hover:text-blue-400 transition-colors duration-300" />
+                    </div>
+                  </motion.a>
+                ))}
+              </div>
               
-              <form onSubmit={handleNewsletterSubmit} className="space-y-4">
-                <div className="relative">
+              {/* Newsletter Signup */}
+              <motion.div
+                className="mt-8 p-4 bg-gradient-to-r from-blue-500/10 to-blue-600/10 rounded-xl border border-blue-500/20"
+                whileHover={{ scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <p className="font-body text-xs text-gray-300 mb-3">Stay updated with our latest innovations</p>
+                <div className="flex gap-2">
                   <input
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-indigo-400 focus:bg-white/10 transition-all duration-200"
-                    required
+                    placeholder="Enter email"
+                    className="flex-1 px-3 py-2 bg-black/50 border border-blue-500/30 rounded-lg text-xs text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors"
                   />
+                  <motion.button
+                    className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded-lg transition-colors font-medium"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Join
+                  </motion.button>
                 </div>
-                
-                <button
-                  type="submit"
-                  disabled={isSubscribing || !email}
-                  className="w-full px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 rounded-xl font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 group"
-                >
-                  {isSubscribing ? (
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <span>Subscribe</span>
-                      <Send size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
-                    </>
-                  )}
-                </button>
-              </form>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
-        </div>
 
-        {/* Bottom Section */}
-        <div className="mt-16 pt-8 border-t border-white/10">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-gray-400 text-sm">
-              © 2024 TechCorp. All rights reserved.
+          {/* Bottom Section */}
+          <motion.div
+            variants={itemVariants}
+            className="mt-12 pt-8 border-t border-blue-500/20"
+          >
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <motion.div
+                className="flex items-center gap-6 text-sm text-gray-400"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+              >
+                <span className="font-body">© {currentYear} AppEqual. All rights reserved.</span>
+                <div className="w-1 h-1 bg-blue-500 rounded-full" />
+                <span className="font-body">Last updated: {lastUpdated}</span>
+              </motion.div>
+              
+              <motion.div
+                className="flex items-center gap-6 text-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7, duration: 0.6 }}
+              >
+                <motion.a
+                  href="#"
+                  className="text-gray-400 hover:text-blue-400 transition-colors font-body"
+                  whileHover={{ y: -2 }}
+                >
+                  Privacy Policy
+                </motion.a>
+                <motion.a
+                  href="#"
+                  className="text-gray-400 hover:text-blue-400 transition-colors font-body"
+                  whileHover={{ y: -2 }}
+                >
+                  Terms of Service
+                </motion.a>
+                <motion.a
+                  href="#"
+                  className="text-gray-400 hover:text-blue-400 transition-colors font-body"
+                  whileHover={{ y: -2 }}
+                >
+                  Cookies
+                </motion.a>
+              </motion.div>
             </div>
-            
-            <div className="flex flex-wrap justify-center md:justify-end space-x-6 text-sm">
-              <a href="/privacy" className="text-gray-400 hover:text-indigo-400 transition-colors duration-200">
-                Privacy Policy
-              </a>
-              <a href="/terms" className="text-gray-400 hover:text-indigo-400 transition-colors duration-200">
-                Terms of Service
-              </a>
-              <a href="/cookies" className="text-gray-400 hover:text-indigo-400 transition-colors duration-200">
-                Cookie Policy
-              </a>
-              <a href="/accessibility" className="text-gray-400 hover:text-indigo-400 transition-colors duration-200">
-                Accessibility
-              </a>
-            </div>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
+
+      {/* Geometric Patterns */}
+      <div className="absolute top-1/2 left-10 w-20 h-20 border border-blue-500/20 rotate-45 animate-spin-slow" />
+      <div className="absolute bottom-20 right-20 w-16 h-16 border border-blue-500/30 rotate-12 animate-pulse" />
+      <div className="absolute top-1/3 right-1/4 w-8 h-8 bg-blue-500/20 rounded-full animate-bounce-slow" />
     </footer>
   );
 };
