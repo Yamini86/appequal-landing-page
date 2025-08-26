@@ -1,165 +1,370 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from 'react'
-import { motion, useInView } from 'motion/react'
-import { ArrowRight } from 'lucide-react'
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ExternalLink, Github, ArrowRight, Filter } from 'lucide-react';
+import Image from 'next/image';
 
-interface ProjectCardProps {
-  title: string
-  description: string
-  year: string
-  index: number
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  techStack: string[];
+  category: ProjectCategory;
+  liveUrl?: string;
+  githubUrl?: string;
+  featured: boolean;
 }
 
-const ProjectCard = ({ title, description, year, index }: ProjectCardProps) => {
-  const cardRef = useRef<HTMLDivElement>(null)
-  const threejsRef = useRef<HTMLDivElement>(null)
+type ProjectCategory = 'All' | 'Web Apps' | 'Mobile' | 'Security' | 'AI/ML' | 'E-commerce';
+
+interface ProjectCardProps {
+  project: Project;
+  index: number;
+}
+
+interface FilterButtonProps {
+  category: ProjectCategory;
+  isActive: boolean;
+  onClick: (category: ProjectCategory) => void;
+}
+
+const projects: Project[] = [
+  {
+    id: '1',
+    title: 'E-Commerce Platform',
+    description: 'Full-stack e-commerce solution with advanced analytics, inventory management, and seamless payment integration.',
+    image: '/api/placeholder/600/400',
+    techStack: ['React', 'Next.js', 'Node.js', 'PostgreSQL', 'Stripe'],
+    category: 'E-commerce',
+    liveUrl: '#',
+    githubUrl: '#',
+    featured: true
+  },
+  {
+    id: '2',
+    title: 'Security Dashboard',
+    description: 'Real-time cybersecurity monitoring dashboard with threat detection, vulnerability scanning, and incident response.',
+    image: '/api/placeholder/600/400',
+    techStack: ['Vue.js', 'Python', 'FastAPI', 'Redis', 'Docker'],
+    category: 'Security',
+    liveUrl: '#',
+    githubUrl: '#',
+    featured: true
+  },
+  {
+    id: '3',
+    title: 'AI Content Generator',
+    description: 'Intelligent content creation platform powered by machine learning algorithms for automated copywriting.',
+    image: '/api/placeholder/600/400',
+    techStack: ['React', 'TensorFlow', 'Python', 'OpenAI API', 'MongoDB'],
+    category: 'AI/ML',
+    liveUrl: '#',
+    githubUrl: '#',
+    featured: true
+  },
+  {
+    id: '4',
+    title: 'Mobile Finance App',
+    description: 'Cross-platform mobile application for personal finance management with budgeting and investment tracking.',
+    image: '/api/placeholder/600/400',
+    techStack: ['React Native', 'TypeScript', 'Firebase', 'Plaid API'],
+    category: 'Mobile',
+    liveUrl: '#',
+    githubUrl: '#',
+    featured: true
+  },
+  {
+    id: '5',
+    title: 'Project Management Suite',
+    description: 'Comprehensive project management platform with team collaboration, time tracking, and resource allocation.',
+    image: '/api/placeholder/600/400',
+    techStack: ['Angular', 'NestJS', 'PostgreSQL', 'WebSocket'],
+    category: 'Web Apps',
+    liveUrl: '#',
+    githubUrl: '#',
+    featured: false
+  },
+  {
+    id: '6',
+    title: 'Blockchain Wallet',
+    description: 'Secure cryptocurrency wallet with multi-chain support, DeFi integration, and advanced security features.',
+    image: '/api/placeholder/600/400',
+    techStack: ['React', 'Web3.js', 'Solidity', 'Ethereum', 'MetaMask'],
+    category: 'Security',
+    liveUrl: '#',
+    githubUrl: '#',
+    featured: false
+  }
+];
+
+const categories: ProjectCategory[] = ['All', 'Web Apps', 'Mobile', 'Security', 'AI/ML', 'E-commerce'];
+
+const FilterButton: React.FC<FilterButtonProps> = ({ category, isActive, onClick }) => {
+  return (
+    <motion.button
+      onClick={() => onClick(category)}
+      className={`relative px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
+        isActive
+          ? 'text-white shadow-lg'
+          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+      }`}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      {isActive && (
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"
+          layoutId="activeFilter"
+          initial={false}
+          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        />
+      )}
+      <span className="relative z-10 flex items-center gap-2">
+        <Filter className="w-4 h-4" />
+        {category}
+      </span>
+    </motion.button>
+  );
+};
+
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <motion.div
-      ref={cardRef}
-      className="group relative bg-card/80 backdrop-blur-xl border border-accent/10 rounded-lg p-6 hover:bg-card/90 hover:border-accent/20 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-accent/20"
+      layout
       initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ 
-        duration: 0.6, 
-        delay: index * 0.2,
-        type: "spring",
-        damping: 25,
-        stiffness: 120
-      }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 50 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="group relative"
     >
-      {/* Three.js Placeholder with Holographic Effect */}
-      <div 
-        ref={threejsRef}
-        className="relative h-40 mb-6 bg-gradient-to-br from-accent/20 via-app-accent-dark/30 to-accent/10 rounded-lg overflow-hidden group-hover:from-accent/30 group-hover:to-accent/20 transition-all duration-500"
+      <motion.div
+        className="relative h-full bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl overflow-hidden shadow-2xl"
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        whileHover={{ y: -10 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
       >
-        {/* Holographic grid effect */}
-        <div className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity duration-500">
-          <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <defs>
-              <pattern id={`grid-${index}`} width="10" height="10" patternUnits="userSpaceOnUse">
-                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(192,192,192,0.3)" strokeWidth="0.5"/>
-              </pattern>
-            </defs>
-            <rect width="100" height="100" fill={`url(#grid-${index})`} />
-          </svg>
-        </div>
+        {/* Glass morphism overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/10 to-transparent pointer-events-none" />
         
-        {/* Animated morphing shape */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <motion.div
-            className="w-16 h-16 bg-gradient-to-br from-accent to-accent/50 rounded-full blur-sm"
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 180, 360],
-              borderRadius: ["50%", "25%", "50%"]
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "linear"
-            }}
+        {/* Project Image */}
+        <div className="relative h-48 overflow-hidden">
+          <Image
+            src={project.image}
+            alt={project.title}
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+          
+          {/* Project Links Overlay */}
+          <motion.div
+            className="absolute top-4 right-4 flex gap-2"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: isHovered ? 1 : 0, scale: isHovered ? 1 : 0.8 }}
+            transition={{ duration: 0.3 }}
+          >
+            {project.liveUrl && (
+              <motion.a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-colors duration-300"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <ExternalLink className="w-4 h-4 text-gray-700" />
+              </motion.a>
+            )}
+            {project.githubUrl && (
+              <motion.a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-colors duration-300"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Github className="w-4 h-4 text-gray-700" />
+              </motion.a>
+            )}
+          </motion.div>
+
+          {/* Category Badge */}
+          <div className="absolute bottom-4 left-4">
+            <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-xs font-medium text-gray-700 rounded-full">
+              {project.category}
+            </span>
+          </div>
         </div>
-        
-        {/* Glow effect overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-transparent via-accent/5 to-accent/10 group-hover:via-accent/10 group-hover:to-accent/20 transition-all duration-500" />
-      </div>
 
-      {/* Project Content */}
-      <div className="space-y-4">
-        {/* Year Badge */}
-        <div className="inline-flex items-center px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium">
-          {year}
+        {/* Project Content */}
+        <div className="p-6 space-y-4">
+          <div>
+            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-300 transition-colors duration-300">
+              {project.title}
+            </h3>
+            <p className="text-gray-300 text-sm leading-relaxed line-clamp-3">
+              {project.description}
+            </p>
+          </div>
+
+          {/* Tech Stack */}
+          <div className="space-y-2">
+            <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+              Tech Stack
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {project.techStack.map((tech, techIndex) => (
+                <motion.span
+                  key={tech}
+                  className="px-2 py-1 bg-white/10 border border-white/20 text-xs text-gray-300 rounded-md"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: techIndex * 0.05 }}
+                >
+                  {tech}
+                </motion.span>
+              ))}
+            </div>
+          </div>
+
+          {/* Learn More Button */}
+          <motion.button
+            className="w-full mt-4 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            Learn More
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+          </motion.button>
         </div>
 
-        {/* Title */}
-        <h3 className="font-[var(--font-display)] font-semibold text-xl text-text-primary group-hover:text-accent transition-colors duration-300">
-          {title}
-        </h3>
-
-        {/* Description */}
-        <p className="font-[var(--font-body)] text-text-secondary leading-relaxed">
-          {description}
-        </p>
-
-        {/* View More Button */}
-        <motion.button
-          className="group/btn inline-flex items-center gap-2 px-4 py-2 bg-accent/10 hover:bg-accent/20 border border-accent/20 hover:border-accent/40 rounded-lg text-accent font-medium transition-all duration-300 hover:shadow-lg hover:shadow-accent/20"
-          whileHover={{ x: 5 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          View More
-          <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
-        </motion.button>
-      </div>
+        {/* Featured Badge */}
+        {project.featured && (
+          <div className="absolute top-4 left-4">
+            <motion.span
+              className="px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-black text-xs font-bold rounded-full shadow-lg"
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              Featured
+            </motion.span>
+          </div>
+        )}
+      </motion.div>
     </motion.div>
-  )
-}
+  );
+};
 
-export default function ProjectsSection() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" })
+export default function ProjectsShowcase() {
+  const [activeCategory, setActiveCategory] = useState<ProjectCategory>('All');
 
-  const projects = [
-    {
-      title: "Henry Patrick - Immersive Digital Experiences",
-      description: "A cutting-edge portfolio showcasing interactive web experiences with advanced Three.js implementations and immersive storytelling.",
-      year: "2025"
-    },
-    {
-      title: "Hugo Yan - Refining Luxury Web Solutions", 
-      description: "Sophisticated e-commerce platform featuring premium user experience design and seamless luxury brand integration.",
-      year: "2024"
-    },
-    {
-      title: "Sully Li - Bringing Communities Together",
-      description: "Social platform development focused on community building with real-time collaboration and engagement features.",
-      year: "2024"
-    }
-  ]
+  const filteredProjects = activeCategory === 'All' 
+    ? projects 
+    : projects.filter(project => project.category === activeCategory);
 
   return (
-    <section 
-      ref={sectionRef}
-      className="relative py-24 bg-app-secondary overflow-hidden"
-      id="projects"
-    >
+    <section className="relative py-24 px-6 lg:px-8 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 overflow-hidden">
       {/* Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative container mx-auto px-6">
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.02"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20" />
+      
+      <div className="relative max-w-7xl mx-auto">
         {/* Section Header */}
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
-          <h2 className="font-[var(--font-display)] font-bold text-4xl lg:text-5xl text-text-primary mb-4">
-            Featured Projects
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-accent to-accent/50 mx-auto rounded-full" />
+          <motion.h2
+            className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-6"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Our Projects
+          </motion.h2>
+          <motion.p
+            className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            Explore our portfolio of innovative solutions that showcase our expertise in 
+            cutting-edge technologies and modern development practices.
+          </motion.p>
+        </motion.div>
+
+        {/* Category Filters */}
+        <motion.div
+          className="flex flex-wrap justify-center gap-4 mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          {categories.map((category) => (
+            <FilterButton
+              key={category}
+              category={category}
+              isActive={activeCategory === category}
+              onClick={setActiveCategory}
+            />
+          ))}
         </motion.div>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={index}
-              title={project.title}
-              description={project.description}
-              year={project.year}
-              index={index}
+        <motion.div 
+          layout
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16"
+        >
+          <AnimatePresence mode="wait">
+            {filteredProjects.map((project, index) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                index={index}
+              />
+            ))}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* Call to Action */}
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
+          <motion.button
+            className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 overflow-hidden"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <span className="relative z-10 flex items-center gap-2">
+              View All Projects
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+            </span>
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              whileHover={{ scale: 1.1 }}
             />
-          ))}
-        </div>
+          </motion.button>
+          
+          <motion.p
+            className="mt-4 text-gray-400 text-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+          >
+            Discover more innovative solutions in our complete portfolio
+          </motion.p>
+        </motion.div>
       </div>
     </section>
-  )
+  );
 }
