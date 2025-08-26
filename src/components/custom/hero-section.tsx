@@ -4,78 +4,18 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Play, Sparkles, Zap, Target } from 'lucide-react';
 
-interface HeroSectionProps {
-  onGetStarted?: () => void;
-  onLearnMore?: () => void;
-  onScrollToContact?: () => void;
-}
-
-interface FloatingElementProps {
-  children: React.ReactNode;
-  delay?: number;
-  duration?: number;
-  initialY?: number;
-  range?: number;
-}
-
-const FloatingElement: React.FC<FloatingElementProps> = ({ 
-  children, 
-  delay = 0, 
-  duration = 6,
-  initialY = 0,
-  range = 20 
-}) => {
-  return (
-    <motion.div
-      initial={{ y: initialY, opacity: 0 }}
-      animate={{ 
-        y: [initialY, initialY - range, initialY],
-        opacity: [0, 1, 1]
-      }}
-      transition={{
-        duration: duration,
-        delay: delay,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }}
-      className="absolute"
-    >
-      {children}
-    </motion.div>
-  );
-};
-
-const GeometricShape: React.FC<{ className?: string; size?: number }> = ({ 
-  className = "", 
-  size = 100 
-}) => (
-  <div 
-    className={`rounded-full bg-gradient-to-br from-blue-400/20 to-purple-400/20 backdrop-blur-sm ${className}`}
-    style={{ width: size, height: size }}
-  />
-);
-
-export default function HeroSection({ 
-  onGetStarted, 
-  onLearnMore, 
-  onScrollToContact 
-}: HeroSectionProps) {
+export default function HeroSection() {
   const handleGetStarted = () => {
-    if (onGetStarted) {
-      onGetStarted();
-    } else if (onScrollToContact) {
-      onScrollToContact();
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   const handleLearnMore = () => {
-    if (onLearnMore) {
-      onLearnMore();
-    } else {
-      const aboutSection = document.getElementById('about');
-      if (aboutSection) {
-        aboutSection.scrollIntoView({ behavior: 'smooth' });
-      }
+    const aboutSection = document.getElementById('about');
+    if (aboutSection) {
+      aboutSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -89,55 +29,79 @@ export default function HeroSection({
         className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-indigo-600/10"
       />
       
-      {/* Floating Geometric Elements */}
-      <FloatingElement delay={0.5} duration={8} initialY={0} range={30}>
-        <div className="top-20 left-10 lg:top-32 lg:left-20">
-          <GeometricShape size={80} className="bg-gradient-to-br from-blue-500/30 to-cyan-500/30" />
-        </div>
-      </FloatingElement>
+      {/* Floating Elements */}
+      <motion.div
+        initial={{ y: 0, opacity: 0 }}
+        animate={{ 
+          y: [-20, 0, -20],
+          opacity: [0, 1, 1]
+        }}
+        transition={{
+          duration: 6,
+          delay: 0.5,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="absolute top-20 left-10 lg:top-32 lg:left-20"
+      >
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500/30 to-cyan-500/30 backdrop-blur-sm" />
+      </motion.div>
 
-      <FloatingElement delay={1} duration={10} initialY={0} range={25}>
-        <div className="top-40 right-16 lg:top-48 lg:right-32">
-          <GeometricShape size={60} className="bg-gradient-to-br from-purple-500/30 to-pink-500/30" />
-        </div>
-      </FloatingElement>
-
-      <FloatingElement delay={1.5} duration={7} initialY={0} range={35}>
-        <div className="bottom-32 left-16 lg:bottom-40 lg:left-40">
-          <GeometricShape size={100} className="bg-gradient-to-br from-indigo-500/30 to-blue-500/30" />
-        </div>
-      </FloatingElement>
-
-      <FloatingElement delay={2} duration={9} initialY={0} range={20}>
-        <div className="bottom-20 right-10 lg:bottom-32 lg:right-24">
-          <GeometricShape size={70} className="bg-gradient-to-br from-cyan-500/30 to-teal-500/30" />
-        </div>
-      </FloatingElement>
+      <motion.div
+        initial={{ y: 0, opacity: 0 }}
+        animate={{ 
+          y: [-25, 0, -25],
+          opacity: [0, 1, 1]
+        }}
+        transition={{
+          duration: 8,
+          delay: 1,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="absolute top-40 right-16 lg:top-48 lg:right-32"
+      >
+        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500/30 to-pink-500/30 backdrop-blur-sm" />
+      </motion.div>
 
       {/* Floating Icons */}
-      <FloatingElement delay={0.8} duration={6} initialY={0} range={15}>
-        <div className="top-64 left-1/4 hidden lg:block">
-          <div className="p-3 rounded-full bg-white/10 backdrop-blur-sm">
-            <Zap className="w-6 h-6 text-yellow-400" />
-          </div>
+      <motion.div
+        initial={{ y: 0, opacity: 0 }}
+        animate={{ 
+          y: [-15, 0, -15],
+          opacity: [0, 1, 1]
+        }}
+        transition={{
+          duration: 6,
+          delay: 0.8,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="absolute top-64 left-1/4 hidden lg:block"
+      >
+        <div className="p-3 rounded-full bg-white/10 backdrop-blur-sm">
+          <Zap className="w-6 h-6 text-yellow-400" />
         </div>
-      </FloatingElement>
+      </motion.div>
 
-      <FloatingElement delay={1.2} duration={8} initialY={0} range={20}>
-        <div className="top-80 right-1/3 hidden lg:block">
-          <div className="p-3 rounded-full bg-white/10 backdrop-blur-sm">
-            <Target className="w-6 h-6 text-green-400" />
-          </div>
+      <motion.div
+        initial={{ y: 0, opacity: 0 }}
+        animate={{ 
+          y: [-20, 0, -20],
+          opacity: [0, 1, 1]
+        }}
+        transition={{
+          duration: 8,
+          delay: 1.2,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="absolute top-80 right-1/3 hidden lg:block"
+      >
+        <div className="p-3 rounded-full bg-white/10 backdrop-blur-sm">
+          <Target className="w-6 h-6 text-green-400" />
         </div>
-      </FloatingElement>
-
-      <FloatingElement delay={1.8} duration={7} initialY={0} range={25}>
-        <div className="bottom-64 left-1/3 hidden lg:block">
-          <div className="p-3 rounded-full bg-white/10 backdrop-blur-sm">
-            <Sparkles className="w-6 h-6 text-purple-400" />
-          </div>
-        </div>
-      </FloatingElement>
+      </motion.div>
 
       {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -192,7 +156,7 @@ export default function HeroSection({
             className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4"
           >
             <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)" }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleGetStarted}
               className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-full transition-all duration-300 shadow-lg"
@@ -212,7 +176,7 @@ export default function HeroSection({
             </motion.button>
           </motion.div>
 
-          {/* Stats or Trust Indicators */}
+          {/* Stats */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -254,9 +218,6 @@ export default function HeroSection({
           />
         </motion.div>
       </motion.div>
-
-      {/* Background Pattern Overlay */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.02"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20" />
     </section>
   );
 }
