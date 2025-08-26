@@ -208,7 +208,7 @@ export default function PortfolioApps() {
           transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1] }}
           className="text-center mb-16"
         >
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary mb-4">
+          <h2 className="font-display text-4xl md:text-5xl font-bold mb-4" style={{ color: "#0000FF" }}>
             Portfolio Showcase
           </h2>
           <p className="text-xl text-text-secondary max-w-2xl mx-auto">

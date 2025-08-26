@@ -111,7 +111,7 @@ export default function ServicesSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary mb-4">
+          <h2 className="font-display text-4xl md:text-5xl font-bold mb-4" style={{ color: "#0000FF" }}>
             Our Services
           </h2>
           <p className="text-xl text-text-secondary max-w-2xl mx-auto">
@@ -170,7 +170,7 @@ export default function ServicesSection() {
               {/* Left Panel */}
               <div className="space-y-8">
                 <div>
-                  <h2 className="font-display text-4xl lg:text-5xl font-bold text-text-primary mb-6">
+                  <h2 className="font-display text-4xl lg:text-5xl font-bold mb-6" style={{ color: "#0000FF" }}>
                     The Reality Check
                   </h2>
                   
@@ -199,7 +199,7 @@ export default function ServicesSection() {
                 <div>
                   <div className="flex items-center gap-3 mb-6">
                     <AlertTriangle className="h-6 w-6 text-red-400" />
-                    <h3 className="font-display text-xl font-semibold text-text-primary">
+                    <h3 className="font-display text-xl font-semibold" style={{ color: "#0000FF" }}>
                       Lost Revenue Opportunities
                     </h3>
                   </div>

@@ -44,7 +44,8 @@ export default function AboutSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.2 }}
                   viewport={{ once: true }}
-                  className="font-display text-4xl lg:text-5xl font-bold text-text-primary mb-8"
+                  className="font-display text-4xl lg:text-5xl font-bold mb-8"
+                  style={{ color: "#0000FF" }}
                 >
                   About AppEqual
                 </motion.h2>
@@ -69,7 +70,7 @@ export default function AboutSection() {
                   className="relative"
                 >
                   <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-app-accent to-transparent rounded-full" />
-                  <h3 className="font-display text-2xl lg:text-3xl font-semibold text-text-primary mb-4">
+                  <h3 className="font-display text-2xl lg:text-3xl font-semibold mb-4" style={{ color: "#0000FF" }}>
                     Our Mission
                   </h3>
                   <p className="font-body text-lg text-app-accent font-medium">

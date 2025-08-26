@@ -77,7 +77,7 @@ export default function InvestmentSection() {
         >
           {/* Section Header */}
           <div className="text-center mb-16 lg:mb-20">
-            <h2 className="font-display text-4xl lg:text-6xl font-bold text-text-primary mb-6">
+            <h2 className="font-display text-4xl lg:text-6xl font-bold mb-6" style={{ color: "#0000FF" }}>
               Investment Network
             </h2>
           </div>
@@ -135,7 +135,7 @@ export default function InvestmentSection() {
           {/* Additional Investment Highlights */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="glass-effect rounded-xl p-6 lg:p-8 group hover:shadow-[0_0_30px_rgba(192,192,192,0.1)] transition-all duration-500">
-              <h3 className="font-display text-xl lg:text-2xl font-semibold text-text-primary mb-4">
+              <h3 className="font-display text-xl lg:text-2xl font-semibold mb-4" style={{ color: "#0000FF" }}>
                 Angel Investor Network
               </h3>
               <p className="font-body text-text-secondary leading-relaxed">
@@ -144,7 +144,7 @@ export default function InvestmentSection() {
             </div>
             
             <div className="glass-effect rounded-xl p-6 lg:p-8 group hover:shadow-[0_0_30px_rgba(192,192,192,0.1)] transition-all duration-500">
-              <h3 className="font-display text-xl lg:text-2xl font-semibold text-text-primary mb-4">
+              <h3 className="font-display text-xl lg:text-2xl font-semibold mb-4" style={{ color: "#0000FF" }}>
                 Investment Readiness
               </h3>
               <p className="font-body text-text-secondary leading-relaxed">

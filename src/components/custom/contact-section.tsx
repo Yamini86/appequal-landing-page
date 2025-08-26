@@ -85,7 +85,7 @@ export default function ContactSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl lg:text-5xl font-display font-bold text-text-primary mb-4">
+          <h2 className="text-4xl lg:text-5xl font-display font-bold mb-4" style={{ color: "#0000FF" }}>
             Get In Touch
           </h2>
           <div className="w-24 h-1 bg-app-accent mx-auto rounded-full" />
@@ -102,7 +102,7 @@ export default function ContactSection() {
             viewport={{ once: true }}
             className="glass-effect rounded-2xl p-8 backdrop-blur-md border border-text-secondary/20"
           >
-            <h3 className="text-2xl font-display font-semibold text-text-primary mb-6">
+            <h3 className="text-2xl font-display font-semibold mb-6" style={{ color: "#0000FF" }}>
               Send us a Message
             </h3>
 
@@ -168,7 +168,7 @@ export default function ContactSection() {
             className="space-y-8"
           >
             <div className="glass-effect rounded-2xl p-8 backdrop-blur-md border border-text-secondary/20">
-              <h3 className="text-2xl font-display font-semibold text-text-primary mb-6">
+              <h3 className="text-2xl font-display font-semibold mb-6" style={{ color: "#0000FF" }}>
                 Contact Information
               </h3>
 
@@ -234,7 +234,7 @@ export default function ContactSection() {
               viewport={{ once: true }}
               className="glass-effect rounded-2xl p-6 backdrop-blur-md border border-text-secondary/20"
             >
-              <h4 className="font-display font-semibold text-text-primary mb-3">
+              <h4 className="font-display font-semibold mb-3" style={{ color: "#0000FF" }}>
                 Ready to Start Your Project?
               </h4>
               <p className="text-text-secondary text-sm leading-relaxed">
