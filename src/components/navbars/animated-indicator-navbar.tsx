@@ -1,203 +1,172 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Menu, X } from 'lucide-react';
 
-import { Button } from "@/components/ui/button";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+interface NavItem {
+  id: string;
+  label: string;
+  href: string;
+}
 
-const NAV_ITEMS = [
-  { name: "Home", link: "#home" },
-  { name: "About", link: "#about" },
-  { name: "Services", link: "#services" },
-  { name: "Projects", link: "#projects" },
-  { name: "Solutions", link: "#solutions" },
-  { name: "Apps", link: "#apps" },
-  { name: "Investment", link: "#investment" },
-  { name: "Contact", link: "#contact" },
+const navItems: NavItem[] = [
+  { id: 'home', label: 'Home', href: '#home' },
+  { id: 'about', label: 'About', href: '#about' },
+  { id: 'services', label: 'Services', href: '#services' },
+  { id: 'projects', label: 'Projects', href: '#projects' },
+  { id: 'contact', label: 'Contact', href: '#contact' },
 ];
 
-const AnimatedIndicatorNavbar = () => {
-  const [activeItem, setActiveItem] = useState(NAV_ITEMS[0].name);
-
-  const indicatorRef = useRef<HTMLDivElement>(null);
-  const menuRef = useRef<HTMLUListElement>(null);
+export const AnimatedIndicatorNavbar = () => {
+  const [activeSection, setActiveSection] = useState('home');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const updateIndicator = () => {
-      const activeEl = document.querySelector(
-        `[data-nav-item="${activeItem}"]`
-      ) as HTMLElement;
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
 
-      if (activeEl && indicatorRef.current && menuRef.current) {
-        const menuRect = menuRef.current.getBoundingClientRect();
-        const itemRect = activeEl.getBoundingClientRect();
+      // Update active section based on scroll position
+      const sections = navItems.map(item => item.id);
+      const currentSection = sections.find(section => {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          return rect.top <= 100 && rect.bottom >= 100;
+        }
+        return false;
+      });
 
-        indicatorRef.current.style.width = `${itemRect.width}px`;
-        indicatorRef.current.style.left = `${itemRect.left - menuRect.left}px`;
+      if (currentSection) {
+        setActiveSection(currentSection);
       }
     };
-    updateIndicator();
-    window.addEventListener("resize", updateIndicator);
 
-    return () => window.removeEventListener("resize", updateIndicator);
-  }, [activeItem]);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  const handleNavClick = (item: { name: string; link: string }) => {
-    setActiveItem(item.name);
-    if (item.link.startsWith('#')) {
-      // Special handling for Apps -> Portfolio
-      if (item.name === 'Apps') {
-        const portfolioElement = document.querySelector('#apps');
-        if (portfolioElement) {
-          portfolioElement.scrollIntoView({ behavior: 'smooth' });
-        }
-      } else {
-        const element = document.querySelector(item.link);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
+  const handleNavClick = (href: string, id: string) => {
+    setActiveSection(id);
+    setIsMobileMenuOpen(false);
+    
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
     }
   };
 
   return (
-    <section className="fixed top-0 left-0 right-0 z-50 py-4">
-      <nav className="container mx-auto flex items-center justify-between glass-effect rounded-2xl px-6 py-3">
-        {/* Left WordMark */}
-        <a href="#home" className="flex items-center gap-2">
-          <span className="text-lg font-[var(--font-display)] font-semibold tracking-tighter text-[#C0C0C0]">
-            AppEqual
-          </span>
-        </a>
-
-        <NavigationMenu className="hidden lg:block">
-          <NavigationMenuList
-            ref={menuRef}
-            className="rounded-4xl flex items-center gap-6 px-8 py-3 glass-effect"
+    <motion.nav
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-white/80 backdrop-blur-lg border-b border-gray-200/20 shadow-lg' 
+          : 'bg-transparent'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="flex items-center space-x-2"
           >
-            {NAV_ITEMS.map((item) => (
-              <React.Fragment key={item.name}>
-                <NavigationMenuItem>
-                  <NavigationMenuLink
-                    data-nav-item={item.name}
-                    onClick={() => handleNavClick(item)}
-                    className={`relative cursor-pointer text-sm font-medium hover:bg-transparent transition-all duration-300 ${
-                      activeItem === item.name
-                        ? "text-[#C0C0C0] drop-shadow-[0_0_8px_rgba(192,192,192,0.6)]"
-                        : "text-[#C0C0C0] hover:text-[#C0C0C0] hover:drop-shadow-[0_0_8px_rgba(47,58,68,0.8)]"
-                    }`}
-                  >
-                    {item.name}
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              </React.Fragment>
-            ))}
-            {/* Active Indicator */}
-            <div
-              ref={indicatorRef}
-              className="absolute bottom-2 flex h-1 items-center justify-center px-2 transition-all duration-300"
-            >
-              <div className="bg-[#C0C0C0] h-0.5 w-full rounded-t-none transition-all duration-300 drop-shadow-[0_0_4px_rgba(192,192,192,0.6)]" />
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">AE</span>
             </div>
-          </NavigationMenuList>
-        </NavigationMenu>
+            <span className="text-xl font-bold text-gray-900">AppEqual</span>
+          </motion.div>
 
-        {/* Mobile Menu Popover */}
-        <MobileNav activeItem={activeItem} setActiveItem={setActiveItem} handleNavClick={handleNavClick} />
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-1 relative">
+            {navItems.map((item) => (
+              <motion.button
+                key={item.id}
+                onClick={() => handleNavClick(item.href, item.id)}
+                className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+                  activeSection === item.id
+                    ? 'text-blue-600'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {item.label}
+                {activeSection === item.id && (
+                  <motion.div
+                    layoutId="activeIndicator"
+                    className="absolute inset-0 bg-blue-50 border border-blue-200 rounded-lg -z-10"
+                    initial={false}
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 30
+                    }}
+                  />
+                )}
+              </motion.button>
+            ))}
+            
+            {/* Animated blue indicator */}
+            <motion.div
+              className="absolute bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-700 rounded-full"
+              layoutId="bottomIndicator"
+              transition={{
+                type: "spring",
+                stiffness: 500,
+                damping: 30
+              }}
+            />
+          </div>
 
-        <div className="hidden items-center gap-2 lg:flex">
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-10 py-2.5 text-sm font-normal glass-effect border-[#C0C0C0]/20 text-[#C0C0C0] hover:bg-[#C0C0C0]/10 hover:text-[#C0C0C0] hover:drop-shadow-[0_0_8px_rgba(47,58,68,0.8)] transition-all duration-300"
+          {/* Mobile menu button */}
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
           >
-            Signup
-          </Button>
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </motion.button>
         </div>
-      </nav>
-    </section>
-  );
-};
-
-export { AnimatedIndicatorNavbar };
-
-const AnimatedHamburger = ({ isOpen }: { isOpen: boolean }) => {
-  return (
-    <div className="group relative h-6 w-6">
-      <div className="absolute inset-0">
-        <Menu
-          className={`text-[#C0C0C0] group-hover:text-[#C0C0C0] group-hover:drop-shadow-[0_0_8px_rgba(47,58,68,0.8)] absolute transition-all duration-300 ${
-            isOpen ? "rotate-90 opacity-0" : "rotate-0 opacity-100"
-          }`}
-        />
-        <X
-          className={`text-[#C0C0C0] group-hover:text-[#C0C0C0] group-hover:drop-shadow-[0_0_8px_rgba(47,58,68,0.8)] absolute transition-all duration-300 ${
-            isOpen ? "rotate-0 opacity-100" : "-rotate-90 opacity-0"
-          }`}
-        />
       </div>
-    </div>
-  );
-};
 
-const MobileNav = ({
-  activeItem,
-  setActiveItem,
-  handleNavClick,
-}: {
-  activeItem: string;
-  setActiveItem: (item: string) => void;
-  handleNavClick: (item: { name: string; link: string }) => void;
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div className="block lg:hidden">
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger>
-          <AnimatedHamburger isOpen={isOpen} />
-        </PopoverTrigger>
-
-        <PopoverContent
-          align="end"
-          className="relative -left-4 -top-4 block w-screen max-w-md overflow-hidden rounded-xl p-0 lg:hidden glass-effect border-[#C0C0C0]/20"
-        >
-          <ul className="glass-effect text-[#C0C0C0] w-full py-4">
-            {NAV_ITEMS.map((navItem, idx) => (
-              <li key={idx}>
-                <a
-                  href={navItem.link}
-                  onClick={() => {
-                    handleNavClick(navItem);
-                    setIsOpen(false);
-                  }}
-                  className={`text-[#C0C0C0] flex items-center border-l-[3px] px-6 py-4 text-sm font-medium transition-all duration-300 ${
-                    activeItem === navItem.name
-                      ? "border-[#C0C0C0] text-[#C0C0C0] drop-shadow-[0_0_8px_rgba(192,192,192,0.6)]"
-                      : "text-[#C0C0C0] hover:text-[#C0C0C0] hover:drop-shadow-[0_0_8px_rgba(47,58,68,0.8)] border-transparent"
+      {/* Mobile Navigation */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden bg-white/95 backdrop-blur-lg border-t border-gray-200/20"
+          >
+            <div className="px-4 py-2 space-y-1">
+              {navItems.map((item, index) => (
+                <motion.button
+                  key={item.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  onClick={() => handleNavClick(item.href, item.id)}
+                  className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    activeSection === item.id
+                      ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                   }`}
                 >
-                  {navItem.name}
-                </a>
-              </li>
-            ))}
-            <li className="flex flex-col px-7 py-2">
-              <Button variant="secondary" className="glass-effect border-[#C0C0C0]/20 text-[#C0C0C0] hover:bg-[#C0C0C0]/10 hover:text-[#C0C0C0]">Sign Up</Button>
-            </li>
-          </ul>
-        </PopoverContent>
-      </Popover>
-    </div>
+                  {item.label}
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
   );
 };

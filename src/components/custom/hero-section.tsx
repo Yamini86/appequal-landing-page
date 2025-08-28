@@ -1,148 +1,165 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from 'react'
-import { motion } from 'motion/react'
-import { ChevronDown } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { motion } from 'motion/react';
+import { ArrowRight, Play, Star } from 'lucide-react';
 
 export default function HeroSection() {
-  const canvasRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    // GSAP-style fade-in animation placeholder
-    // In a real implementation, this would initialize GSAP animations
-    const elements = document.querySelectorAll('.animate-fade-in')
-    elements.forEach((el, index) => {
-      setTimeout(() => {
-        el.classList.add('opacity-100')
-        el.classList.remove('opacity-0')
-      }, index * 200 + 500)
-    })
-  }, [])
-
-  const handleExploreClick = () => {
-    const servicesSection = document.querySelector('#services')
-    if (servicesSection) {
-      servicesSection.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
   return (
-    <section id="home" className="relative w-full overflow-hidden bg-app-primary" style={{ minHeight: 'calc(100vh - 80px)', marginTop: '80px' }}>
-      {/* WebGL Canvas Placeholder */}
-      <div 
-        ref={canvasRef}
-        className="absolute inset-0 z-0"
-        style={{
-          background: `
-            radial-gradient(circle at 20% 80%, rgba(0, 0, 255, 0.15) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(192, 192, 192, 0.08) 0%, transparent 50%),
-            radial-gradient(circle at 40% 40%, rgba(47, 58, 68, 0.3) 0%, transparent 50%)
-          `
-        }}
-      >
-        {/* Static particles */}
-        <div className="absolute inset-0">
-          {[...Array(50)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 rounded-full opacity-20"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                background: Math.random() > 0.5 ? '#0000FF' : '#C0C0C0'
-              }}
-            />
-          ))}
-        </div>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-100">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-blob"></div>
+        <div className="absolute top-40 right-10 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-blob animation-delay-4000"></div>
       </div>
 
-      {/* Hero Content */}
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center lg:px-8" style={{ minHeight: 'calc(100vh - 80px)' }}>
-        <div className="max-w-4xl mx-auto space-y-8">
-          {/* Main Heading */}
-          <motion.h1 
-            className="animate-fade-in opacity-0 font-display text-3xl font-bold leading-tight transition-opacity duration-1000 md:text-4xl lg:text-6xl"
-            style={{
-              background: 'linear-gradient(135deg, #0000FF 0%, #C0C0C0 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+      {/* Grid Pattern Overlay */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJncmlkIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPgo8cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMEZGIiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4wNSIvPgo8L3BhdHRlcm4+CjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIgLz4KPHN2Zz4K')] opacity-50"></div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center">
+          {/* Logo Animation */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-8"
           >
-            Empowering Your Digital Future
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl mb-6 shadow-2xl">
+              <span className="text-3xl font-bold text-white">A</span>
+            </div>
+          </motion.div>
+
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mb-8"
+          >
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-100 text-blue-800 text-sm font-medium border border-blue-200">
+              <Star className="w-4 h-4 mr-2 fill-current text-blue-600" />
+              Trusted by thousands of users worldwide
+            </div>
+          </motion.div>
+
+          {/* Main Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-5xl md:text-7xl lg:text-8xl font-bold text-gray-900 mb-8 leading-tight"
+          >
+            <span className="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 bg-clip-text text-transparent">
+              AppEqual
+            </span>
+            <br />
+            <span className="text-gray-800">
+              for Everyone
+            </span>
           </motion.h1>
 
-          {/* New Subtitle */}
-          <motion.p 
-            className="animate-fade-in opacity-0 font-body text-lg font-medium text-text-secondary transition-opacity duration-1000 md:text-xl lg:text-2xl max-w-3xl mx-auto"
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed"
           >
-            With Innovative Solutions that transform businesses through cutting-edge web development, e-commerce platforms, and mobile applications
+            Building inclusive digital experiences that work for everyone. 
+            Create accessible applications with powerful tools and seamless integration.
           </motion.p>
 
-          {/* Company Name */}
-          <motion.p 
-            className="animate-fade-in opacity-0 font-body text-base font-medium text-text-secondary/80 transition-opacity duration-1000 md:text-lg"
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          >
-            AppEqual E-Commerce Pvt Ltd - Pioneering Technology Solutions in Hyderabad, India
-          </motion.p>
-
-          {/* CTA Button */}
+          {/* CTA Buttons */}
           <motion.div
-            className="animate-fade-in opacity-0 transition-opacity duration-1000"
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
           >
-            <Button
-              onClick={handleExploreClick}
-              size="lg"
-              className="group relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-700 text-white font-display font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-110 hover:shadow-lg"
-              style={{
-                boxShadow: '0 0 30px rgba(0, 0, 255, 0.4)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = '0 0 50px rgba(0, 0, 255, 0.6)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 0, 255, 0.4)'
-              }}
+            <motion.button
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:from-blue-700 hover:to-blue-800"
             >
-              <span className="relative z-10">Explore Our Solutions</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/80 to-blue-600/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-            </Button>
+              Get Started Free
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="group inline-flex items-center px-8 py-4 border-2 border-blue-600 text-blue-600 font-semibold rounded-xl hover:bg-blue-600 hover:text-white transition-all duration-300"
+            >
+              <Play className="mr-2 w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+              Watch Demo
+            </motion.button>
+          </motion.div>
+
+          {/* Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.9 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto"
+          >
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">10K+</div>
+              <div className="text-gray-600">Active Users</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">99.9%</div>
+              <div className="text-gray-600">Uptime</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">24/7</div>
+              <div className="text-gray-600">Support</div>
+            </div>
           </motion.div>
         </div>
-
-        {/* Scroll Indicator */}
-        <motion.div 
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-fade-in opacity-0 transition-opacity duration-1000"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1.0 }}
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="flex flex-col items-center space-y-2 text-text-secondary"
-          >
-            <span className="font-body text-sm">Scroll to explore</span>
-            <ChevronDown className="h-6 w-6" />
-          </motion.div>
-        </motion.div>
       </div>
 
-      {/* Glassmorphic overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-app-primary/20 pointer-events-none" />
+      {/* Floating Elements */}
+      <motion.div
+        animate={{ 
+          y: [0, -20, 0],
+          rotate: [0, 5, 0]
+        }}
+        transition={{ 
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="absolute top-1/4 left-8 w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full opacity-20 blur-sm"
+      />
+      
+      <motion.div
+        animate={{ 
+          y: [0, 15, 0],
+          rotate: [0, -3, 0]
+        }}
+        transition={{ 
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1
+        }}
+        className="absolute top-1/3 right-12 w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-700 rounded-full opacity-15 blur-sm"
+      />
+
+      <motion.div
+        animate={{ 
+          y: [0, -10, 0],
+          x: [0, 5, 0]
+        }}
+        transition={{ 
+          duration: 5,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2
+        }}
+        className="absolute bottom-1/4 left-1/4 w-8 h-8 bg-gradient-to-r from-blue-300 to-blue-500 rounded-full opacity-25 blur-sm"
+      />
     </section>
-  )
+  );
 }
